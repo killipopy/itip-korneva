@@ -27,4 +27,14 @@ class FeatureProcessorTest {
         new FeatureProcessor(new MinMaxNormalization()).process(input);
         assertArrayEquals(snapshot, input, 1e-9);
     }
+
+    @Test
+    void swapsToZScore() {
+        FeatureProcessor p = new FeatureProcessor(new ZScoreNormalization());
+        // {1, 2, 3}: mean = 2, population std = sqrt(2/3)
+        // (1-2)/std = -sqrt(3/2), (3-2)/std = +sqrt(3/2)
+        double s = Math.sqrt(3.0 / 2.0);
+        assertArrayEquals(new double[]{-s, 0.0, s},
+                p.process(INPUT.clone()), 1e-9);
+    }
 }
